@@ -1,0 +1,138 @@
+@import "reset";
+
+// MIXIN -최상단에 해주기 (or reset 처럼 파일 새로 만들어서 하는거 가능)
+@mixin btn($width:100px, $bgColor:grey, $fontColor:white) {
+    display: block;
+    width: $width;
+    height: 30px;
+    border-radius: 15px;
+    background-color:  $bgColor;
+    color: $fontColor;
+    text-align: center;
+    font: bold 16px/30px "arial";
+    margin-top: 20px;
+}
+
+// COLOR SET
+//wrap 
+$bodyBgColor: #eee;
+$itemBgColor: #000;
+$itemHoverBgColor:orange;
+$boxShadow:  5px 5px 20px rgba(0, 0, 0, 0.2);
+
+// animation
+$interval: 0.3s;
+
+/* COMMON */
+
+body {
+    background-color: $bodyBgColor;
+    
+    .wrap {
+        width: 100%;
+        border-bottom: 2px solid black;
+        padding: 100px;
+        display: flex;
+        justify-content: center;
+        perspective: 600px;
+        
+        // &는 item 이라는 뜻
+        &:hover {
+            .item {
+                transform: translate(0,0) rotateY(0deg);
+                opacity: 1;
+            }
+        }
+
+        .item {
+            width: 300px;
+            padding: 30px;
+            background-color: $itemBgColor;
+            margin: 50px;
+            border-radius: 10px;
+            box-shadow: $boxShadow;
+            transform: translate(0, 100px) rotateY(180deg);
+            transition: 0.7s;
+            opacity: 0;
+            // 음수는 위로 양수는 아래로
+
+            &::after {
+                content: "!";
+            }
+            
+            h2 {
+                font: bold 30px/1 "arial";
+                margin-bottom: 20px;
+                @if $itemBgColor == #fff {
+                    color: #333;
+                }@else {
+                    color: #fff;
+                }
+            }
+
+            p {
+                font: normal 16px/1.5 "arial";
+                @if $itemBgColor == #fff {
+                    color: #777;
+                }@else {
+                    color: #ccc;
+                }
+            }
+
+            a {
+                @include btn($width: 150px, $bgColor:red, $fontColor:white);
+            }
+
+            //버튼 색 바꾸기
+            //each 문
+            $bgColors: (orange, hotpink, aqua, lightgreen);
+
+            @each $el in $bgColors {
+                $index: index($bgColors, $el);
+                &:nth-of-type(#{$index}) {
+                    transition-delay: $interval*$index;
+                    //밑에것과 합치기 가능
+
+                    //버튼 색과 h2 p 를 같은 색으로 만들고 싶을 때
+                    // h2 {
+                    //     color: $el;
+                    // }
+
+                    // p {
+                    //     color: $el;
+                    // }
+
+                    a {
+                        @include btn($bgColor: $el);
+                    }
+
+                }
+            }
+
+            //0.2초 동안 item 이 각각 나타나는 효과
+            //위에 선언되 interval로 작동
+
+            // 이렇게 각각 줄 수도 있지만 수가 많아지면 for 문을 씀
+            // &:nth-of-type(1) {
+            //     transition-delay: .1s;
+            // }
+            // &:nth-of-type(2) {
+            //     transition-delay: .2s;
+            // }
+            // &:nth-of-type(3) {
+            //     transition-delay: .3s;
+            // }
+            // &:nth-of-type(4) {
+            //     transition-delay: .4s;
+            // }
+
+            // @for $i from 1 to 5 {
+            //     &:nth-of-type(#{$i}) {
+            //         transition-delay: $interval*$i;
+            //     }
+            // }
+        }
+
+    }
+
+}
